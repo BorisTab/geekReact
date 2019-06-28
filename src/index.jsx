@@ -7,6 +7,8 @@ import Clock from './components/Clock';
 import Counter from './components/Counter';
 import PostsList from './containers/PostsListContainer';
 import Post from './containers/PostContainer';
+import {Provider} from 'react-redux';
+import store from './store';
 
 class App extends Component {
   constructor(props) {
@@ -54,7 +56,8 @@ class App extends Component {
 }
 
 ReactDom.render(
-    <BrowserRouter>
-      <App/>
-    </BrowserRouter>,
-    document.getElementById('root'));
+    <Provider store={store}>
+      <BrowserRouter>
+        <App/>
+      </BrowserRouter>
+    </Provider>, document.getElementById('root'));

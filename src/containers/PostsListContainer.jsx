@@ -1,48 +1,36 @@
 import React, {PureComponent} from 'react';
-import Loading from '../components/Loading';
-import PostsList from '../components/Posts';
+import Loading from 'components/Loading';
+import PostsList from 'components/Posts';
+import {connect} from 'react-redux';
+import {postLoadAction} from 'actions/posts';
 
-export default class PostsListContainer extends PureComponent {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      post: [],
-      page: 1,
-      loading: false,
-    };
-  }
-
+class PostsListContainer extends PureComponent {
   componentDidMount() {
-    this.setState({loading: true});
-    fetch('https://jsonplaceholder.typicode.com/posts?_limit=3&_page=1')
-        .then((response) => response.json())
-        .then((posts) => {
-          this.setState({posts, loading: false, page: 2});
-        })
-        .catch(() => {
-          this.setState({posts: [], loading: false});
-        });
-  }
-
-  handleLoadClick = () => {
-    const {page, posts} = this.state;
-
-    fetch(`https://jsonplaceholder.typicode.com/posts?_limit=3&_page=${page}`)
-        .then((response) => response.json())
-        .then((receivedPosts) => {
-          this.setState({
-            posts: posts.concat(receivedPosts),
-            page: page + 1,
-          });
-        });
+    const {loadPosts} = this.props;
+    loadPosts();
   };
 
   render() {
-    const {loading, posts} = this.state;
+    const {posts, loading} = this.props;
     return (
-      loading ? <Loading/> :
-        <PostsList posts={posts} onLoadClick={this.handleLoadClick}/>
+      loading ? <Loading/> : <PostsList posts={posts} />
     );
   }
 }
+
+function mapStateToProps(state, ownProps) {
+  return {
+    ...ownProps,
+    loading: state.posts.loading,
+    posts: state.posts.items,
+  };
+}
+
+function mapDispatchToProps(dispatch, ownProps) {
+  return {
+    ...ownProps,
+    loadPosts: () => postLoadAction(dispatch),
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(PostsListContainer);
