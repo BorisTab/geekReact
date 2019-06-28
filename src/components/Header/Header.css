@@ -1,0 +1,11 @@
+.header-mini {
+    width: 100px;
+    height: 100px;
+    background-color: darksalmon;
+}
+
+.header-maxi {
+    width: 600px;
+    height: 100px;
+    background-color: darksalmon;
+}
